@@ -42,8 +42,9 @@ class ContactBook:
         return args
 
     def insert_contact(self):
-        # insert into 24:05
-        # only insert if name, last, email and phone number are not the same as existing contact
+        """
+        inserts a contact into the database if it doesn't exist in the contacts table
+        """
         contact_args = contact.get_args()
         print(f"this is contact_args: {contact_args}")
         name_list = self.c.execute("SELECT * FROM contacts WHERE firstname=:firstname AND lastname=:lastname", {'firstname':contact_args.firstname, 'lastname':contact_args.lastname})
@@ -59,15 +60,17 @@ class ContactBook:
 
 
     def update_contact(self):
-        # update 
+        """
+        Updates the information of the contact
+        """
         field_changed = input("Which field do you want to update? Type 'firstname','lastname','email' or 'phone > ")
         field_changed_to = input("What do you want to change the field to? > ")
         firstname_value = input("What is the first name of the contact you want to change? > ")
         lastname_value = input("What is the last name of the contact you want to change? > ")
 
-        self.c.execute("""UPDATE contacts SET field_changed = :field_changed_to
-                          WHERE firstname = :firstname_value and lastname = :lastname_value """,
-                          {'field_changed': field_changed_to, 'firstname': firstname_value, 'lastname': lastname_value})
+        self.c.execute("""UPDATE contacts SET """ + field_changed + """=?
+                          WHERE firstname = ? and lastname = ? """,
+                          (field_changed_to, firstname_value, lastname_value))
         
         self.conn.commit()
         self.conn.close()
