@@ -33,12 +33,15 @@ class ContactBook:
         parser.add_argument('--email', type=str, help="The email address of your contact")
         parser.add_argument('--phone', type=str, help="The phone number of your contact")
         parser.add_argument('--update', help="This will allow you to update a contact", action="store_true")
+        parser.add_argument('--listcontact', help="This will grab a contact you specify by first and last name and print it to the console", action="store_true")
+        parser.add_argument('--listsort', help="This will list contacts by last name in alphabetical order and print it to the console", action="store_true")
         parser.add_argument('--all', help="Will list all of your contacts", action="store_true")
         parser.add_argument('--deleteall', help="Will delete all your contacts", action="store_true")
+        parser.add_argument('--delete', help="This will delete a particular contact you specify", action="store_true")
         args = parser.parse_args()
        
 
-        print(f"this is args: {args}")
+        #print(f"this is args: {args}")
         return args
 
     def insert_contact(self):
@@ -46,7 +49,7 @@ class ContactBook:
         inserts a contact into the database if it doesn't exist in the contacts table
         """
         contact_args = contact.get_args()
-        print(f"this is contact_args: {contact_args}")
+        #print(f"this is contact_args: {contact_args}")
         name_list = self.c.execute("SELECT * FROM contacts WHERE firstname=:firstname AND lastname=:lastname", {'firstname':contact_args.firstname, 'lastname':contact_args.lastname})
 
         if (contact_args.firstname, contact_args.lastname, contact_args.email, contact_args.phone) not in name_list and not contact_args.all: # check if tuple is in the list, if it's not then insert it into the table
@@ -75,10 +78,34 @@ class ContactBook:
         self.conn.commit()
         self.conn.close()
 
-
-
-
+    # TODO: this function does not loop thorugh and prompt to delete when more than one contact
+    def delete_contact(self): 
+        """
+        Deletes a contact you specify
+        """
         
+        firstname_delete = input("What is the first name of the contact you want to delete? ")
+        lastname_delete = input("What is the last name of the contact you want to delete? ")
+
+        contacts_to_delete = self.c.execute("SELECT * FROM contacts WHERE firstname=? AND lastname=?",
+                            (firstname_delete, lastname_delete) )
+     
+        row = self.c.fetchone()
+        if row is None:
+            print(f"The contact {firstname_delete} {lastname_delete} does not exist.")
+
+        for contact in contacts_to_delete:
+            first, last, email, phone = contact
+
+            is_delete = input("Do you want to delete contact {} {} {} {} ? Type 'Yes' or 'No' > ".format(first, last, email, phone))
+            if is_delete == 'Yes' or 'yes':
+                self.c.execute("DELETE FROM contacts WHERE firstname=? AND lastname=? AND email=? AND phone=?",
+                                    (first, last, email, phone))
+
+                print("Your contact has been deleted.")
+
+        self.conn.commit()   
+        self.conn.close()
 
     def delete_all_contacts(self):
         # deletes all contacts from your contact book
@@ -103,11 +130,38 @@ class ContactBook:
             print(item)
     
 
-    def list_contact_in_order(self):
-        pass
+    def list_contact(self):
+        """ 
+        Selects a contact that's specified and prints it to the console
+        """
+        firstname_contact = input("What is the first name of your contact? ")
+        lastname_contact = input("What is the last name of your contact? ") 
 
-    def list_contact_by_date(self):
-        pass
+        select_contact = self.c.execute("SELECT * FROM contacts WHERE firstname=?" \
+                                        "AND lastname=?", (firstname_contact, lastname_contact))
+
+        row = self.c.fetchone() # gets the first row
+            
+        if row is None: # if there are no results in the first row then the contact doesn't exist
+             print(f"There is no contact by the name of {firstname_contact} {lastname_contact}")
+
+        for contact in select_contact:
+            first, last, email, phone = contact
+            if first == firstname_contact and last == lastname_contact:
+                print(f"Here is your contact: {contact}")
+
+
+
+    def list_sort_by_last_name(self):
+        """
+        Sorts the contacts by last name in ascending order and prints to the console
+        """
+
+        sorted_contacts = self.c.execute("SELECT * FROM contacts ORDER BY lastname")
+        
+        for contact in sorted_contacts:
+            print(contact)
+
 
     def main(self):
 
@@ -117,10 +171,16 @@ class ContactBook:
             contact.list_contacts()
         elif args.deleteall:
             contact.delete_all_contacts()
+        elif args.delete:
+            contact.delete_contact()
         elif args.firstname:
             contact.insert_contact()
         elif args.update:
             contact.update_contact()
+        elif args.listcontact:
+            contact.list_contact()
+        elif args.listsort:
+            contact.list_sort_by_last_name()
 
 
 
