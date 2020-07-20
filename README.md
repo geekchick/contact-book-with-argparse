@@ -12,9 +12,9 @@ Since it’s a command-line project, the contacts will save to a sqlite3 databas
  Then you can pass in the following flags:
  
 
- `python3 contact_book.py --firstname "John" --lastname "Doe" --email "johndoe@foo.bar" --phone "2222222222"`  
- `python3 contact_book.py --update` 
- `python3 contact_book.py --listcontact` 
+ `python3 contact_book.py --firstname "John" --lastname "Doe" --email "johndoe@foo.bar" --phone "2222222222"`<br/>  
+ `python3 contact_book.py --update`<br/> 
+ `python3 contact_book.py --listcontact`<br/> 
  `python3 contact_book.py --listsort` 
  `python3 contact_book.py --all` 
  `python3 contact_book.py --deleteall` 
