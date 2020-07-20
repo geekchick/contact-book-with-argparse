@@ -13,10 +13,10 @@ Since it’s a command-line project, the contacts will save to a sqlite3 databas
  
 
 **Note: Adds a contact to database** `python3 contact_book.py --firstname "John" --lastname "Doe" --email "johndoe@foo.bar" --phone "2222222222"`<br/>  
- **Note: Updates a contact** `python3 contact_book.py --update`<br/> 
- `python3 contact_book.py --listcontact`<br/> **Note: Lists a specific contact**
- `python3 contact_book.py --listsort`<br/> **Note: Sorts contacts in alphabetical order**
- `python3 contact_book.py --all`<br/> **Note: Lists all your contacts**
- `python3 contact_book.py --deleteall`<br/> **Note: Deletes all your contacts**
- `python3 contact_book.py --delete`<br/> **Note: Deletes a specific contact**
+**Note: Updates a contact** `python3 contact_book.py --update`<br/> 
+**Note: Lists a specific contact**`python3 contact_book.py --listcontact`<br/> 
+**Note: Sorts contacts in alphabetical order** `python3 contact_book.py --listsort`<br/>
+**Note: Lists all your contacts**`python3 contact_book.py --all`<br/> 
+**Note: Deletes all your contacts**` **Note: Sorts contacts in alphabetical order**python3 contact_book.py --deleteall`<br/> 
+**Note: Deletes a specific contact**`python3 contact_book.py --delete`<br/>
  
